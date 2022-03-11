@@ -1,5 +1,5 @@
 module library {
 	exports procurement;
 	requires java.xml;
-	requires java.desktop;
+	requires transitive java.desktop;
 }

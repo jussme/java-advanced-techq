@@ -35,7 +35,6 @@ public class DataWindow extends JFrame{
 	private static final String TAB = "   ";
 	
 	private JFrame frmDirdiff;
-	private JTextPane textPane;
 	private JList<String> dirList;
 	private JLabel lblPwd;
 	private JLabel label_loadMethod;
@@ -77,7 +76,7 @@ public class DataWindow extends JFrame{
 	/**
 	 * Create the application.
 	 */
-	public DataWindow(BiConsumer<DataWindow, String> cd, Consumer<DataWindow> chooseDir) {
+	public DataWindow() {
 		try {
 		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		        if ("Windows".equals(info.getName())) {
@@ -88,14 +87,14 @@ public class DataWindow extends JFrame{
 		} catch (Exception e) {
 		   
 		}
-		initialize(cd, chooseDir);
+		initialize();
 		this.frmDirdiff.setVisible(true);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(BiConsumer<DataWindow, String> cd, Consumer<DataWindow> chooseDir) {
+	private void initialize() {
 		frmDirdiff = new JFrame();
 		frmDirdiff.setTitle("DirDiff");
 		frmDirdiff.setBackground(Color.DARK_GRAY);
@@ -103,7 +102,6 @@ public class DataWindow extends JFrame{
 		frmDirdiff.setBounds(100, 100, 922, 814);
 		frmDirdiff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{388, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 1.0};
 		frmDirdiff.getContentPane().setLayout(gridBagLayout);
@@ -112,7 +110,6 @@ public class DataWindow extends JFrame{
 		panel.setBackground(Color.DARK_GRAY);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.weightx = 0.1;
-		gbc_panel.weighty = 0.1;
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
@@ -124,16 +121,6 @@ public class DataWindow extends JFrame{
 		btnChooseDir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnChooseDir.addActionListener(event -> chooseDir.accept(this));
 		panel.add(btnChooseDir);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
-		gbc_scrollPane.weighty = 0.55;
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 3;
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 		
 		lblPwd = new JLabel("pwd");
 		lblPwd.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -147,35 +134,17 @@ public class DataWindow extends JFrame{
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-		gbc_scrollPane_1.weighty = 0.35;
+		gbc_scrollPane_1.gridheight = 2;
 		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_1.gridx = 0;
 		gbc_scrollPane_1.gridy = 2;
 		frmDirdiff.getContentPane().add(scrollPane_1, gbc_scrollPane_1);
-		frmDirdiff.getContentPane().add(scrollPane, gbc_scrollPane);
-		
-		JPanel nestedPanel = new JPanel();
-		nestedPanel.setBackground(Color.DARK_GRAY);
-		GridBagConstraints gbc_nestedPanel = new GridBagConstraints();
-		gbc_nestedPanel.fill = GridBagConstraints.BOTH;
-		gbc_nestedPanel.gridx = 0;
-		gbc_nestedPanel.gridy = 4;
-		scrollPane.add(nestedPanel, gbc_nestedPanel);
-		nestedPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		scrollPane.setViewportView(nestedPanel);
-		
-		textPane = new JTextPane();
-		textPane.setFont(new Font("SansSerif", Font.PLAIN, 16));
-		textPane.setForeground(Color.GREEN);
-		textPane.setBackground(Color.DARK_GRAY);
-		textPane.setEditable(false);
 		GridBagConstraints gbc_textPane = new GridBagConstraints();
 		gbc_textPane.insets = new Insets(0, 0, 5, 0);
 		gbc_textPane.fill = GridBagConstraints.BOTH;
 		gbc_textPane.gridx = 0;
 		gbc_textPane.gridy = 3;
-		nestedPanel.add(textPane);
 		
 		dirList = new JList<>();
 		dirList.setFont(new Font("SansSerif", Font.PLAIN, 14));
