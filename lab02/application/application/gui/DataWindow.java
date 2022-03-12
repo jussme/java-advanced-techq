@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,6 +41,7 @@ public class DataWindow extends JFrame{
 	private JLabel label_loadMethod;
 	private JTextPane textPane_person;
 	private JLabel label_image;
+	private JPanel recordsContainer;
 	
 	public void setDir(String pwd, List<String> dirs) {
 		this.lblPwd.setText(pwd.toString());
@@ -58,8 +60,8 @@ public class DataWindow extends JFrame{
 	}
 	
 	private String getChoosenDir() {
-		var tab = dirList.getSelectedValue().split("\\s");
-		return tab[tab.length-1];
+		var dir = dirList.getSelectedValue().trim();
+		return dir;
 	}
 	
 	public static Path chooseDir() {
@@ -72,11 +74,23 @@ public class DataWindow extends JFrame{
 		}
 		return null;
 	}
+	
+	public void renderRecord(RecordContainerPanel recordPanel) {
+		recordsContainer.add(recordPanel);
+	}
+	
+	public void clearRecords() {
+		synchronized(recordsContainer.getTreeLock()) {
+			for(Component child : recordsContainer.getComponents()) {
+				recordsContainer.remove(child);
+			}
+		}
+	}
 
 	/**
 	 * Create the application.
 	 */
-	public DataWindow() {
+	public DataWindow(BiConsumer<DataWindow, String> cd, Consumer<DataWindow> chooseDir) {
 		try {
 		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		        if ("Windows".equals(info.getName())) {
@@ -87,14 +101,14 @@ public class DataWindow extends JFrame{
 		} catch (Exception e) {
 		   
 		}
-		initialize();
+		initialize(cd, chooseDir);
 		this.frmDirdiff.setVisible(true);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(BiConsumer<DataWindow, String> cd, Consumer<DataWindow> chooseDir) {
 		frmDirdiff = new JFrame();
 		frmDirdiff.setTitle("DirDiff");
 		frmDirdiff.setBackground(Color.DARK_GRAY);
@@ -162,8 +176,8 @@ public class DataWindow extends JFrame{
 		gbc_dirList.gridy = 3;
 		scrollPane_1.setViewportView(dirList);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		recordsContainer = new JPanel();
+		recordsContainer.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
 		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_panel_1.weightx = 0.75;
@@ -172,11 +186,11 @@ public class DataWindow extends JFrame{
 		gbc_panel_1.gridx = 1;
 		gbc_panel_1.gridy = 0;
 		//frmDirdiff.getContentPane().add(panel_1, gbc_panel_1);
-		panel_1.setLayout(new BorderLayout(0, 0));
+		recordsContainer.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		panel_1.add(panel_2, BorderLayout.NORTH);
+		recordsContainer.add(panel_2, BorderLayout.NORTH);
 		panel_2.setLayout(new BorderLayout(0, 0));
 		
 		label_loadMethod = new JLabel("Loaded from memory");
@@ -197,7 +211,7 @@ public class DataWindow extends JFrame{
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		panel_1.add(panel_3, BorderLayout.CENTER);
+		recordsContainer.add(panel_3, BorderLayout.CENTER);
 		panel_3.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		label_image = new JLabel("No image");
@@ -205,15 +219,15 @@ public class DataWindow extends JFrame{
 		label_image.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_3.add(label_image);
 		
-		JScrollPane scrollPane_3 = new JScrollPane();
+		var recordsScrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_3 = new GridBagConstraints();
 		gbc_scrollPane_3.gridheight = 4;
 		gbc_scrollPane_3.insets = new Insets(0, 0, 0, 5);
 		gbc_scrollPane_3.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_3.gridx = 1;
 		gbc_scrollPane_3.gridy = 0;
-		frmDirdiff.getContentPane().add(scrollPane_3, gbc_scrollPane_3);
-		scrollPane_3.setViewportView(panel_1);
+		frmDirdiff.getContentPane().add(recordsScrollPane, gbc_scrollPane_3);
+		recordsScrollPane.setViewportView(recordsContainer);
 	}
 
 }
