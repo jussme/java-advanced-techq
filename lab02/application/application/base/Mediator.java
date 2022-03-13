@@ -1,17 +1,12 @@
 package base;
 
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Scanner;
-
-import javax.swing.JLabel;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 
 import gui.DataWindow;
-import gui.RepresentationFactory;
+import gui.RecordContainerPanel;
+import procurement.Retriever;
 import procurement.Storage;
 
 public class Mediator {
@@ -29,21 +24,29 @@ public class Mediator {
 						if(!tempPwd.toFile().exists()) {
 							return;
 						}
-						pwd = tempPwd;
-						var containerPanelText = new RecordContainerPanel(RepresentationFactory.getRepresentationComponent(null, tempPwd));
-						var containerPanelText = new RecordContainerPanel(RepresentationFactory.getRepresentationComponent(null, tempPwd));
-						if(diffRecord != null) {
-							window.setDir(diffRecord.pwd.toString(), diffRecord.filesDiff, diffRecord.dirDiff);
+						var dirs = Retriever.cd(tempPwd);
+						if(dirs != null) {
+							pwd = tempPwd;
+							window.clearRecords();
+							window.setDir(pwd.toString(), dirs);
+							for(RecordContainerPanel panel : Retriever.retrieve(pwd, storage)) {
+								window.renderRecord(panel);
+							}
 						}
-					}, window -> {//wybor folderu w dialogu
 						
-						pwd = DiffWindow.chooseDir();
+					}, window -> {//jfilechooser
+						pwd = DataWindow.chooseDir();
 						if(pwd == null) {
 							return;
 						}
-						var diffRecord = Scanner.cd(pwd);
-						if(diffRecord != null) {
-							window.setDir(diffRecord.pwd.toString(), diffRecord.filesDiff, diffRecord.dirDiff);
+						var dirs = Retriever.cd(pwd);
+						
+						if(dirs != null) {
+							window.clearRecords();
+							window.setDir(pwd.toString(), dirs);
+							for(RecordContainerPanel panel : Retriever.retrieve(pwd, storage)) {
+								window.renderRecord(panel);
+							}
 						}
 					});
 				} catch (Exception e) {

@@ -1,11 +1,11 @@
 package procurement;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.JComponent;
 
@@ -14,14 +14,18 @@ import gui.RepresentationFactory;
 import gui.RepresentationFactory.RecordType;
 
 public class Retriever {
-	private final static String FILENAME_TEXT = "record.txt";
-	private final static String FILENAME_IMAGE = "image.png";
 	
 	public static List<String> cd(Path dir) {
-		var dirsAsFiles = Arrays.asList(dir.toFile().listFiles(file -> file.isDirectory()));
-		return dirsAsFiles.stream()
-				.map((dirAsFile) -> dirAsFile.toString())
-				.collect(Collectors.toList());
+		List<String> returnList = new LinkedList<>();
+		try(var dirs = Files.newDirectoryStream(dir, entry -> Files.isDirectory(entry))){
+			for(Path dirInDir : dirs) {
+				returnList.add(dirInDir.getFileName().toString());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return returnList;
 	}
 	
 	public static List<RecordContainerPanel> retrieve(Path dir, Storage storage) {
@@ -31,9 +35,13 @@ public class Retriever {
 			if(rep != null) {
 				returnList.add(new RecordContainerPanel(rep, true));
 			} else {
-				returnList.add(new RecordContainerPanel(
-						RepresentationFactory.getRepresentationComponent(type, Paths.get(dir.toString(), type.toString())), false));				
+				rep = RepresentationFactory.getRepresentationComponent(type, Paths.get(dir.toString(), type.toString()));
+				if (rep != null) {
+					storage.register(dir, type, rep);
+					returnList.add(new RecordContainerPanel(rep, false));
+				}			
 			}
 		}
+		return returnList;
 	}
 }

@@ -11,6 +11,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+
+/**
+ * JPanel container used for wrapping custom/prebuild JComponent representations of records,
+ * for it to be itself embedded in a DataWindow.
+ * 
+ * @author mk
+ *
+ */
 public class RecordContainerPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 
@@ -30,11 +38,7 @@ public class RecordContainerPanel extends JPanel{
 		this.add(label_loadMethod, BorderLayout.NORTH);
 		
 		this.add(record, BorderLayout.CENTER);
-	}
-
-	public boolean setReadFromMemory(boolean readFromMemory) {
 		
-		
-		return readFromMemory;
+		this.setVisible(true);
 	}
 }

@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,17 +19,14 @@ import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 
 public class DataWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
@@ -37,11 +35,8 @@ public class DataWindow extends JFrame{
 	
 	private JFrame frmDirdiff;
 	private JList<String> dirList;
-	private JLabel lblPwd;
-	private JLabel label_loadMethod;
-	private JTextPane textPane_person;
-	private JLabel label_image;
 	private JPanel recordsContainer;
+	private JTextArea lblPwd;
 	
 	public void setDir(String pwd, List<String> dirs) {
 		this.lblPwd.setText(pwd.toString());
@@ -123,8 +118,7 @@ public class DataWindow extends JFrame{
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.DARK_GRAY);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.weightx = 0.1;
-		gbc_panel.insets = new Insets(0, 0, 5, 5);
+		gbc_panel.insets = new Insets(8, 8, 0, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 0;
@@ -135,21 +129,31 @@ public class DataWindow extends JFrame{
 		btnChooseDir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnChooseDir.addActionListener(event -> chooseDir.accept(this));
 		panel.add(btnChooseDir);
-		
-		lblPwd = new JLabel("pwd");
-		lblPwd.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPwd.setForeground(Color.GREEN);
-		lblPwd.setBackground(Color.DARK_GRAY);
 		GridBagConstraints gbc_lblPwd = new GridBagConstraints();
-		gbc_lblPwd.insets = new Insets(0, 0, 5, 5);
+		gbc_lblPwd.insets = new Insets(0, 8, 0, 5);
 		gbc_lblPwd.gridx = 0;
 		gbc_lblPwd.gridy = 1;
-		frmDirdiff.getContentPane().add(lblPwd, gbc_lblPwd);
+		JPanel bufPanel = new JPanel();
+		
+		bufPanel.setBackground(Color.DARK_GRAY);
+		frmDirdiff.getContentPane().add(bufPanel, gbc_lblPwd);
+		bufPanel.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		lblPwd = new JTextArea();
+		lblPwd.setText("pwd");
+		lblPwd.setFont(new Font("Monospaced", Font.PLAIN, 15));
+		lblPwd.setForeground(Color.GREEN);
+		lblPwd.setBackground(Color.DARK_GRAY);
+		lblPwd.setLineWrap(true);
+		lblPwd.setEditable(false);
+		bufPanel.add(lblPwd);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.getVerticalScrollBar().setUnitIncrement(16);
+		scrollPane_1.getHorizontalScrollBar().setUnitIncrement(16);
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
 		gbc_scrollPane_1.gridheight = 2;
-		gbc_scrollPane_1.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane_1.insets = new Insets(0, 8, 8, 5);
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_1.gridx = 0;
 		gbc_scrollPane_1.gridy = 2;
@@ -185,45 +189,15 @@ public class DataWindow extends JFrame{
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
 		gbc_panel_1.gridx = 1;
 		gbc_panel_1.gridy = 0;
-		//frmDirdiff.getContentPane().add(panel_1, gbc_panel_1);
-		recordsContainer.setLayout(new BorderLayout(0, 0));
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		recordsContainer.add(panel_2, BorderLayout.NORTH);
-		panel_2.setLayout(new BorderLayout(0, 0));
-		
-		label_loadMethod = new JLabel("Loaded from memory");
-		label_loadMethod.setHorizontalAlignment(SwingConstants.CENTER);
-		label_loadMethod.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel_2.add(label_loadMethod, BorderLayout.NORTH);
-		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		panel_2.add(scrollPane_2, BorderLayout.CENTER);
-		
-		JPanel panel_4 = new JPanel();
-		panel_4.setLayout(new GridLayout(0, 1, 0, 0));
-		scrollPane_2.setViewportView(panel_4);
-		
-		textPane_person = new JTextPane();
-		textPane_person.setEditable(false);
-		panel_4.add(textPane_person);
-		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		recordsContainer.add(panel_3, BorderLayout.CENTER);
-		panel_3.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		label_image = new JLabel("No image");
-		label_image.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		label_image.setHorizontalAlignment(SwingConstants.CENTER);
-		panel_3.add(label_image);
+		recordsContainer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		var recordsScrollPane = new JScrollPane();
+		recordsScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		recordsScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 		GridBagConstraints gbc_scrollPane_3 = new GridBagConstraints();
-		gbc_scrollPane_3.gridheight = 4;
-		gbc_scrollPane_3.insets = new Insets(0, 0, 0, 5);
 		gbc_scrollPane_3.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane_3.insets = new Insets(8, 0, 8, 8);
+		gbc_scrollPane_3.gridheight = 4;
 		gbc_scrollPane_3.gridx = 1;
 		gbc_scrollPane_3.gridy = 0;
 		frmDirdiff.getContentPane().add(recordsScrollPane, gbc_scrollPane_3);
