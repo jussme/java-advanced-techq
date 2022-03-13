@@ -16,6 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -27,6 +28,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EtchedBorder;
+import javax.swing.JSplitPane;
 
 public class DataWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
@@ -110,59 +112,68 @@ public class DataWindow extends JFrame{
 		frmDirdiff.getContentPane().setBackground(Color.DARK_GRAY);
 		frmDirdiff.setBounds(100, 100, 922, 814);
 		frmDirdiff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWeights = new double[]{0.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 1.0};
-		frmDirdiff.getContentPane().setLayout(gridBagLayout);
+		frmDirdiff.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
+		
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 8));
+		frmDirdiff.getContentPane().add(splitPane);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setForeground(Color.GREEN);
+		panel_1.setBackground(Color.DARK_GRAY);
+		splitPane.setLeftComponent(panel_1);
+		GridBagLayout gbl_panel_1 = new GridBagLayout();
+		gbl_panel_1.columnWidths = new int[]{0, 0};
+		gbl_panel_1.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_panel_1.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
+		panel_1.setLayout(gbl_panel_1);
 		
 		JPanel panel = new JPanel();
-		panel.setBackground(Color.DARK_GRAY);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.insets = new Insets(8, 8, 0, 5);
 		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.insets = new Insets(0, 0, 0, 8);
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 0;
-		frmDirdiff.getContentPane().add(panel, gbc_panel);
+		panel_1.add(panel, gbc_panel);
+		panel.setBackground(Color.DARK_GRAY);
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		JButton btnChooseDir = new JButton("Choose dir");
 		btnChooseDir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnChooseDir.addActionListener(event -> chooseDir.accept(this));
 		panel.add(btnChooseDir);
-		GridBagConstraints gbc_lblPwd = new GridBagConstraints();
-		gbc_lblPwd.insets = new Insets(0, 8, 0, 5);
-		gbc_lblPwd.gridx = 0;
-		gbc_lblPwd.gridy = 1;
 		JPanel bufPanel = new JPanel();
+		GridBagConstraints gbc_bufPanel = new GridBagConstraints();
+		gbc_bufPanel.insets = new Insets(0, 0, 0, 8);
+		gbc_bufPanel.gridx = 0;
+		gbc_bufPanel.gridy = 1;
+		panel_1.add(bufPanel, gbc_bufPanel);
 		
 		bufPanel.setBackground(Color.DARK_GRAY);
-		frmDirdiff.getContentPane().add(bufPanel, gbc_lblPwd);
-		bufPanel.setLayout(new GridLayout(0, 1, 0, 0));
+		bufPanel.setLayout(new BorderLayout(0, 0));
 		
 		lblPwd = new JTextArea();
+		lblPwd.setColumns(23);
+		lblPwd.setLineWrap(true);
+		lblPwd.setTabSize(2);
 		lblPwd.setText("pwd");
 		lblPwd.setFont(new Font("Monospaced", Font.PLAIN, 15));
 		lblPwd.setForeground(Color.GREEN);
 		lblPwd.setBackground(Color.DARK_GRAY);
-		lblPwd.setLineWrap(true);
 		lblPwd.setEditable(false);
 		bufPanel.add(lblPwd);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.getVerticalScrollBar().setUnitIncrement(16);
-		scrollPane_1.getHorizontalScrollBar().setUnitIncrement(16);
 		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
-		gbc_scrollPane_1.gridheight = 2;
-		gbc_scrollPane_1.insets = new Insets(0, 8, 8, 5);
 		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane_1.gridheight = 2;
+		gbc_scrollPane_1.insets = new Insets(0, 0, 0, 8);
 		gbc_scrollPane_1.gridx = 0;
 		gbc_scrollPane_1.gridy = 2;
-		frmDirdiff.getContentPane().add(scrollPane_1, gbc_scrollPane_1);
-		GridBagConstraints gbc_textPane = new GridBagConstraints();
-		gbc_textPane.insets = new Insets(0, 0, 5, 0);
-		gbc_textPane.fill = GridBagConstraints.BOTH;
-		gbc_textPane.gridx = 0;
-		gbc_textPane.gridy = 3;
+		panel_1.add(scrollPane_1, gbc_scrollPane_1);
+		scrollPane_1.getVerticalScrollBar().setUnitIncrement(16);
+		scrollPane_1.getHorizontalScrollBar().setUnitIncrement(16);
 		
 		dirList = new JList<>();
 		dirList.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -174,14 +185,26 @@ public class DataWindow extends JFrame{
 				cd.accept(this, getChoosenDir());
 			}
 		});
-		GridBagConstraints gbc_dirList = new GridBagConstraints();
-		gbc_dirList.fill = GridBagConstraints.BOTH;
-		gbc_dirList.gridx = 0;
-		gbc_dirList.gridy = 3;
 		scrollPane_1.setViewportView(dirList);
 		
 		recordsContainer = new JPanel();
 		recordsContainer.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		recordsContainer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		var recordsScrollPane = new JScrollPane();
+		splitPane.setRightComponent(recordsScrollPane);
+		recordsScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		recordsScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+		recordsScrollPane.setViewportView(recordsContainer);
+		GridBagConstraints gbc_textPane = new GridBagConstraints();
+		gbc_textPane.insets = new Insets(0, 0, 5, 0);
+		gbc_textPane.fill = GridBagConstraints.BOTH;
+		gbc_textPane.gridx = 0;
+		gbc_textPane.gridy = 3;
+		GridBagConstraints gbc_dirList = new GridBagConstraints();
+		gbc_dirList.fill = GridBagConstraints.BOTH;
+		gbc_dirList.gridx = 0;
+		gbc_dirList.gridy = 3;
 		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
 		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_panel_1.weightx = 0.75;
@@ -189,19 +212,6 @@ public class DataWindow extends JFrame{
 		gbc_panel_1.fill = GridBagConstraints.BOTH;
 		gbc_panel_1.gridx = 1;
 		gbc_panel_1.gridy = 0;
-		recordsContainer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		var recordsScrollPane = new JScrollPane();
-		recordsScrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		recordsScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
-		GridBagConstraints gbc_scrollPane_3 = new GridBagConstraints();
-		gbc_scrollPane_3.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane_3.insets = new Insets(8, 0, 8, 8);
-		gbc_scrollPane_3.gridheight = 4;
-		gbc_scrollPane_3.gridx = 1;
-		gbc_scrollPane_3.gridy = 0;
-		frmDirdiff.getContentPane().add(recordsScrollPane, gbc_scrollPane_3);
-		recordsScrollPane.setViewportView(recordsContainer);
 	}
 
 }
