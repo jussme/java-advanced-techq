@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -74,13 +73,14 @@ public class DataWindow extends JFrame{
 	
 	public void renderRecord(RecordContainerPanel recordPanel) {
 		recordsContainer.add(recordPanel);
+		recordsContainer.repaint();
 		recordsContainer.revalidate();
 		frame.validate();
-		
 	}
 	
 	public void clearRecords() {
 		recordsContainer.removeAll();
+		recordsContainer.repaint();
 		recordsContainer.revalidate();
 		frame.validate();
 	}
