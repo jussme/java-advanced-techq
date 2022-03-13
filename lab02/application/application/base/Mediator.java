@@ -13,8 +13,6 @@ public class Mediator {
 	private Path pwd;
 	private final Storage storage = new Storage();
 	
-	
-	
 	public void showWindow() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -33,7 +31,6 @@ public class Mediator {
 								window.renderRecord(panel);
 							}
 						}
-						
 					}, window -> {//jfilechooser
 						pwd = DataWindow.chooseDir();
 						if(pwd == null) {

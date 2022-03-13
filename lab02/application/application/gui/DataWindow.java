@@ -2,7 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -23,19 +23,19 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EtchedBorder;
-import javax.swing.JSplitPane;
 
 public class DataWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
 
 	private static final String TAB = "   ";
 	
-	private JFrame frmDirdiff;
+	private JFrame frame;
 	private JList<String> dirList;
 	private JPanel recordsContainer;
 	private JTextArea lblPwd;
@@ -74,16 +74,17 @@ public class DataWindow extends JFrame{
 	
 	public void renderRecord(RecordContainerPanel recordPanel) {
 		recordsContainer.add(recordPanel);
+		recordsContainer.revalidate();
+		frame.validate();
+		
 	}
 	
 	public void clearRecords() {
-		synchronized(recordsContainer.getTreeLock()) {
-			for(Component child : recordsContainer.getComponents()) {
-				recordsContainer.remove(child);
-			}
-		}
+		recordsContainer.removeAll();
+		recordsContainer.revalidate();
+		frame.validate();
 	}
-
+	
 	/**
 	 * Create the application.
 	 */
@@ -99,24 +100,24 @@ public class DataWindow extends JFrame{
 		   
 		}
 		initialize(cd, chooseDir);
-		this.frmDirdiff.setVisible(true);
+		this.frame.setVisible(true);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(BiConsumer<DataWindow, String> cd, Consumer<DataWindow> chooseDir) {
-		frmDirdiff = new JFrame();
-		frmDirdiff.setTitle("DirDiff");
-		frmDirdiff.setBackground(Color.DARK_GRAY);
-		frmDirdiff.getContentPane().setBackground(Color.DARK_GRAY);
-		frmDirdiff.setBounds(100, 100, 922, 814);
-		frmDirdiff.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmDirdiff.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
+		frame = new JFrame();
+		frame.setTitle("Data");
+		frame.setBackground(Color.DARK_GRAY);
+		frame.getContentPane().setBackground(Color.DARK_GRAY);
+		frame.setBounds(100, 100, 1088, 814);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 8));
-		frmDirdiff.getContentPane().add(splitPane);
+		frame.getContentPane().add(splitPane);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(Color.GREEN);

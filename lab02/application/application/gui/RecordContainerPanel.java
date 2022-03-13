@@ -3,7 +3,6 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.nio.file.Path;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
