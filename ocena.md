@@ -7,3 +7,5 @@ mała responsywność przy obliczaniu hashy dużego folderu
 proste wnioski, miejscowe nie spełnienie DRY
 
 **4.5**
+## lab03
+jeden schemat, nie zastosowano MessageFormat z ChoiceFormat aby uzyskac odmiane przez liczby
