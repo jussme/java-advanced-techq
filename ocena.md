@@ -9,3 +9,5 @@ proste wnioski, miejscowe niespełnienie DRY
 **4.5**
 ## lab03
 jeden schemat, nie zastosowano MessageFormat z ChoiceFormat aby uzyskac odmiane przez liczby
+
+**4.0**
