@@ -4,7 +4,7 @@ mała responsywność przy obliczaniu hashy dużego folderu
 
 **4.5**
 ## lab02
-proste wnioski, miejscowe nie spełnienie DRY
+proste wnioski, miejscowe niespełnienie DRY
 
 **4.5**
 ## lab03
