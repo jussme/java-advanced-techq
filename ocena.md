@@ -11,3 +11,7 @@ proste wnioski, miejscowe niespełnienie DRY
 jeden schemat, nie zastosowano MessageFormat z ChoiceFormat aby uzyskac odmiane przez liczby
 
 **4.0**
+## lab04
+ułomny interfejs graficzny, brak przełączania między Processor'ami podczas wykonywania
+
+**4.0**
