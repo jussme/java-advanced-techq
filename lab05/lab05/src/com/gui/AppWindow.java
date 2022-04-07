@@ -145,6 +145,12 @@ public class AppWindow {
 			}).start();
 		});
 		panel_1.add(btnReload);
+		GridBagLayout gbl_panel_2 = new GridBagLayout();
+		gbl_panel_2.columnWidths = new int[]{605, 99, 0};
+		gbl_panel_2.rowHeights = new int[]{389, 0};
+		gbl_panel_2.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_2.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		panel_2.setLayout(gbl_panel_2);
 		
 		table = new JTable(model);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -152,10 +158,23 @@ public class AppWindow {
 		table.setDefaultEditor(Object.class, null);//non-editable
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.getTableHeader().setReorderingAllowed(false);
-		panel_2.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 0;
+		panel_2.add(scrollPane, gbc_scrollPane);
+		scrollPane.setViewportView(table);
 		
 		JPanel panel = new JPanel();
-		panel_2.add(panel, BorderLayout.EAST);
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.anchor = GridBagConstraints.WEST;
+		gbc_panel.fill = GridBagConstraints.VERTICAL;
+		gbc_panel.gridx = 1;
+		gbc_panel.gridy = 0;
+		panel_2.add(panel, gbc_panel);
 		
 		JButton btnCalculate = new JButton("Calculate");
 		btnCalculate.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -167,10 +186,6 @@ public class AppWindow {
 		
 		textArea = new JTextArea();
 		panel.add(textArea);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		panel_2.add(scrollPane, BorderLayout.CENTER);
-		scrollPane.setViewportView(table);
 		
 		btnLoadCSV.addActionListener(event -> {
 			new Thread(() -> {
