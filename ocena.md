@@ -15,3 +15,7 @@ jeden schemat, nie zastosowano MessageFormat z ChoiceFormat aby uzyskac odmiane 
 ułomny interfejs graficzny, brak przełączania między Processor'ami podczas wykonywania
 
 **4.0**
+## lab05
+brak wyboru service'ow poza zmiana zawartosci cp, nie udalo sie zrealizowac wariantu standardowego
+
+**4.0**
