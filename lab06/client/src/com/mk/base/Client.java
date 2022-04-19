@@ -98,9 +98,9 @@ public class Client implements IClient{
 	}
 	
 	private IManager getManager(String host, int port, String managerName) throws RemoteException, NotBoundException{
-		System.setProperty("javax.net.ssl.keyStore", "keyss");
+		System.setProperty("javax.net.ssl.keyStore", "rmisslcert.jks");
 		System.setProperty("javax.net.ssl.keyStorePassword", "pass123");
-		System.setProperty("javax.net.ssl.trustStore", "keyss");
+		System.setProperty("javax.net.ssl.trustStore", "rmisslcert.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "pass123");
 		
 		try {

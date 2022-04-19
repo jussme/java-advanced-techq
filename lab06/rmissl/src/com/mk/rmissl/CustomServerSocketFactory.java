@@ -33,7 +33,7 @@ public class CustomServerSocketFactory implements RMIServerSocketFactory{
 	
 	@Override
 	public ServerSocket createServerSocket(int port) throws IOException {
-		return ssf.createServerSocket();
+		return ssf.createServerSocket(port);
 	}
 	
 	@Override
