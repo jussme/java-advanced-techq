@@ -11,9 +11,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import com.mk.rmissl.CustomClientSocketFactory;
-import com.mk.rmissl.CustomServerSocketFactory;
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+
 import com.mk.rmissl.SSLUnicastRemoteObject;
+import com.mk.rmissl.SslRmiSocketFactoryFactory;
 
 import bilboards.IBillboard;
 import bilboards.IManager;
@@ -130,8 +131,11 @@ public class Manager implements IManager{
 	}
 	
 	private void share(int port, String managerName) throws Exception {
-		var registry = LocateRegistry.createRegistry(port, new CustomClientSocketFactory(), new CustomServerSocketFactory());
+		var registry = LocateRegistry.createRegistry(port,
+				new SslRMIClientSocketFactory(),
+				SslRmiSocketFactoryFactory.getServerSocketFactory("rmisslcert.jks", "pass123", false));
 		var unicastRemoteObject = new SSLUnicastRemoteObject();
+		@SuppressWarnings("static-access")
 		var managerStub = unicastRemoteObject.exportObject(this, 0);
 		registry.bind(managerName, managerStub);
 	}

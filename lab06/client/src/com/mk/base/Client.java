@@ -3,12 +3,10 @@ package com.mk.base;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
 import java.time.Duration;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-
 import com.mk.rmissl.SSLUnicastRemoteObject;
+import com.mk.rmissl.SslRmiSocketFactoryFactory;
 
 import bilboards.IClient;
 import bilboards.IManager;
@@ -64,6 +62,7 @@ public class Client implements IClient{
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public IClient export() throws Exception {
 		var ssluro = new SSLUnicastRemoteObject();
 		return (IClient) ssluro.exportObject(this, 0);
@@ -97,14 +96,10 @@ public class Client implements IClient{
 		}
 	}
 	
-	private IManager getManager(String host, int port, String managerName) throws RemoteException, NotBoundException{
-		System.setProperty("javax.net.ssl.keyStore", "rmisslcert.jks");
-		System.setProperty("javax.net.ssl.keyStorePassword", "pass123");
-		System.setProperty("javax.net.ssl.trustStore", "rmisslcert.jks");
-		System.setProperty("javax.net.ssl.trustStorePassword", "pass123");
-		
+	private IManager getManager(String host, int port, String managerName) throws Exception{
 		try {
-			var registry = LocateRegistry.getRegistry(host, port, new SslRMIClientSocketFactory());
+			var registry = LocateRegistry.getRegistry(host, port,
+					SslRmiSocketFactoryFactory.getClientSocketFactory(null, null, "rmisslcert.jks", "pass123"));
 			return (IManager) registry.lookup(managerName);
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
