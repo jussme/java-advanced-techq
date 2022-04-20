@@ -50,7 +50,7 @@ public class Client implements IClient{
 		
 		try{
 			var orderIdReporter = new OrderIdReporter();
-			var client = new Client(args[0], Integer.valueOf(args[1]), args[2], orderIdReporter);
+			var client = new Client(args[0], Integer.valueOf(args[1]), args[2], orderIdReporter, args[3], args[4]);
 			var window = new ClientWindow(client);
 			orderIdReporter.window = window;
 		} catch (NumberFormatException e) {
@@ -86,9 +86,10 @@ public class Client implements IClient{
 		}
 	}
 	
-	public Client(String host, int port, String managerName, OrderIdReporter reporter) throws Exception {
+	public Client(String host, int port, String managerName, OrderIdReporter reporter, String trustStorePath, String trustStorePass)
+			throws Exception {
 		try{
-			manager = getManager(host, port, managerName);
+			manager = getManager(host, port, managerName, trustStorePath, trustStorePass);
 			this.reporter = reporter;
 			stub = export();
 		} catch (Exception e) {
@@ -96,10 +97,10 @@ public class Client implements IClient{
 		}
 	}
 	
-	private IManager getManager(String host, int port, String managerName) throws Exception{
+	private IManager getManager(String host, int port, String managerName, String trustStorePath, String trustStorePass) throws Exception{
 		try {
 			var registry = LocateRegistry.getRegistry(host, port,
-					SslRmiSocketFactoryFactory.getClientSocketFactory(null, null, "rmisslcert.jks", "pass123"));
+					SslRmiSocketFactoryFactory.getClientSocketFactory(null, null, trustStorePath, trustStorePass));
 			return (IManager) registry.lookup(managerName);
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
