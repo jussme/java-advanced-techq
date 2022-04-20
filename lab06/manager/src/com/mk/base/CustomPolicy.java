@@ -21,7 +21,7 @@ public class CustomPolicy extends Policy{
 	}
 	
 	private void addPermissions() {
-		var permList = Arrays.asList(new SocketPermission("*:1024-", "connect, resolve"),
+		var permList = Arrays.asList(new SocketPermission("*:1024-", "connect, listen, resolve"),
 				new FilePermission("rmisslcert.jks", "read"), //new PropertyPermission("*", "read, write"),
 				new RuntimePermission("*"));
 		

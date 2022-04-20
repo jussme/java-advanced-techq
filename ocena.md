@@ -19,3 +19,7 @@ ułomny interfejs graficzny, brak przełączania między Processor'ami podczas w
 brak wyboru service'ow poza zmiana zawartosci cp, nie udalo sie zrealizowac wariantu standardowego
 
 **4.0**
+## lab06
+brak kilku opcji dla managera; polityka w klasie
+
+**4.5**

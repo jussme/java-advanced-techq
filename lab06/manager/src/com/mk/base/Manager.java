@@ -11,9 +11,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import com.mk.rmissl.CustomClientSocketFactory;
-import com.mk.rmissl.CustomServerSocketFactory;
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+
 import com.mk.rmissl.SSLUnicastRemoteObject;
+import com.mk.rmissl.SslRmiSocketFactoryFactory;
 
 import bilboards.IBillboard;
 import bilboards.IManager;
@@ -53,8 +54,10 @@ public class Manager implements IManager{
 	public static void main(String[] args) {
 		//args[0] port
 		//args[1] managerName
+		//args[2] keystore path
+		//args[3] keystore password
 		try{
-			var manager = new Manager(Integer.valueOf(args[0]), args[1]);
+			var manager = new Manager(Integer.valueOf(args[0]), args[1], args[2], args[3]);
 			var window = new Window(manager);
 			manager.window = window;
 		} catch (NumberFormatException e) {
@@ -115,7 +118,7 @@ public class Manager implements IManager{
 		}
 	}
 	
-	public Manager(int port, String managerName) throws Exception {
+	public Manager(int port, String managerName, String keyStorePath, String keyStorePass) throws Exception {
 		Policy.setPolicy(new CustomPolicy());
 		
 		if(System.getSecurityManager() == null) {
@@ -123,15 +126,18 @@ public class Manager implements IManager{
 		}
 		
 		try {
-			share(port, managerName);
+			share(port, managerName, keyStorePath, keyStorePass);
 		} catch (RemoteException | AlreadyBoundException e) {
 			throw e;
 		}
 	}
 	
-	private void share(int port, String managerName) throws Exception {
-		var registry = LocateRegistry.createRegistry(port, new CustomClientSocketFactory(), new CustomServerSocketFactory());
+	private void share(int port, String managerName, String keyStorePath, String keyStorePass) throws Exception {
+		var registry = LocateRegistry.createRegistry(port,
+				new SslRMIClientSocketFactory(),
+				SslRmiSocketFactoryFactory.getServerSocketFactory(keyStorePath, keyStorePass, false));
 		var unicastRemoteObject = new SSLUnicastRemoteObject();
+		@SuppressWarnings("static-access")
 		var managerStub = unicastRemoteObject.exportObject(this, 0);
 		registry.bind(managerName, managerStub);
 	}

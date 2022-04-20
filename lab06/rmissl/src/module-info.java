@@ -1,4 +1,4 @@
 module rmissl {
-	requires java.rmi;
+	requires transitive java.rmi;
 	exports com.mk.rmissl;
 }

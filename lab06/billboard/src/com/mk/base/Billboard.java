@@ -3,12 +3,12 @@ package com.mk.base;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mk.rmissl.SSLUnicastRemoteObject;
+import com.mk.rmissl.SslRmiSocketFactoryFactory;
 
 import bilboards.IBillboard;
 import bilboards.IManager;
@@ -100,7 +100,7 @@ public class Billboard implements IBillboard{
 		
 		try{
 			var window = new Window();
-			new Billboard(args[0], Integer.valueOf(args[1]), args[2], window);
+			new Billboard(args[0], Integer.valueOf(args[1]), args[2], window, args[3], args[4]);
 		} catch (NumberFormatException e) {
 			System.out.println("Wrong argument format: hostname, port, managerName");
 			System.exit(1);
@@ -110,9 +110,10 @@ public class Billboard implements IBillboard{
 		}
 	}
 	
-	private IManager getManager(String host, int port, String managerName) throws RemoteException, NotBoundException{
+	private IManager getManager(String host, int port, String managerName, String trustStorePath, String trustStorePass) throws Exception{
 		try {
-			var registry = LocateRegistry.getRegistry(host, port);
+			var registry = LocateRegistry.getRegistry(host, port,
+					SslRmiSocketFactoryFactory.getClientSocketFactory(null, null, trustStorePath, trustStorePass));
 			return (IManager) registry.lookup(managerName);
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
@@ -120,14 +121,16 @@ public class Billboard implements IBillboard{
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public IBillboard export() throws Exception {
 		var ssluro = new SSLUnicastRemoteObject();
 		return (IBillboard) ssluro.exportObject(this, 0);
 	}
 	
-	public Billboard(String host, int port, String managerName, Window window) throws Exception {
+	public Billboard(String host, int port, String managerName, Window window, String trustStorePath, String trustStorePass)
+			throws Exception {
 		try{
-			manager = getManager(host, port, managerName);
+			manager = getManager(host, port, managerName, trustStorePath, trustStorePass);
 			this.window = window;
 			
 			id = manager.bindBillboard(export());

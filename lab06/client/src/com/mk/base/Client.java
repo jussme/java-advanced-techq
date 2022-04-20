@@ -3,12 +3,10 @@ package com.mk.base;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
 import java.time.Duration;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-
 import com.mk.rmissl.SSLUnicastRemoteObject;
+import com.mk.rmissl.SslRmiSocketFactoryFactory;
 
 import bilboards.IClient;
 import bilboards.IManager;
@@ -52,7 +50,7 @@ public class Client implements IClient{
 		
 		try{
 			var orderIdReporter = new OrderIdReporter();
-			var client = new Client(args[0], Integer.valueOf(args[1]), args[2], orderIdReporter);
+			var client = new Client(args[0], Integer.valueOf(args[1]), args[2], orderIdReporter, args[3], args[4]);
 			var window = new ClientWindow(client);
 			orderIdReporter.window = window;
 		} catch (NumberFormatException e) {
@@ -64,6 +62,7 @@ public class Client implements IClient{
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public IClient export() throws Exception {
 		var ssluro = new SSLUnicastRemoteObject();
 		return (IClient) ssluro.exportObject(this, 0);
@@ -87,9 +86,10 @@ public class Client implements IClient{
 		}
 	}
 	
-	public Client(String host, int port, String managerName, OrderIdReporter reporter) throws Exception {
+	public Client(String host, int port, String managerName, OrderIdReporter reporter, String trustStorePath, String trustStorePass)
+			throws Exception {
 		try{
-			manager = getManager(host, port, managerName);
+			manager = getManager(host, port, managerName, trustStorePath, trustStorePass);
 			this.reporter = reporter;
 			stub = export();
 		} catch (Exception e) {
@@ -97,14 +97,10 @@ public class Client implements IClient{
 		}
 	}
 	
-	private IManager getManager(String host, int port, String managerName) throws RemoteException, NotBoundException{
-		System.setProperty("javax.net.ssl.keyStore", "keyss");
-		System.setProperty("javax.net.ssl.keyStorePassword", "pass123");
-		System.setProperty("javax.net.ssl.trustStore", "keyss");
-		System.setProperty("javax.net.ssl.trustStorePassword", "pass123");
-		
+	private IManager getManager(String host, int port, String managerName, String trustStorePath, String trustStorePass) throws Exception{
 		try {
-			var registry = LocateRegistry.getRegistry(host, port, new SslRMIClientSocketFactory());
+			var registry = LocateRegistry.getRegistry(host, port,
+					SslRmiSocketFactoryFactory.getClientSocketFactory(null, null, trustStorePath, trustStorePass));
 			return (IManager) registry.lookup(managerName);
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
