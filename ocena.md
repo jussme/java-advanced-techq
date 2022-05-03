@@ -23,3 +23,7 @@ brak wyboru service'ow poza zmiana zawartosci cp, nie udalo sie zrealizowac wari
 brak kilku opcji dla managera; polityka w klasie
 
 **4.5**
+## lab07
+reczne wprowadzanie danych, przegladanie platnosci i rat; brak monitow i i raportowania platnosci
+
+**3.0**
