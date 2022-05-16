@@ -11,15 +11,21 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.BorderLayout;
+import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
+import java.awt.FlowLayout;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
 
 public class AppWindow {
 
 	private JFrame frame;
 	
 	static public interface Mediator {
-		void chooseInputFile();
-		void chooseOutputFile();
-		void chooseKey(boolean privateKey);
+		String chooseInputFile();
+		String chooseOutputFile();
+		String chooseKey(boolean privateKey);
 		void encrypt();
 		void decrypt();
 	}
@@ -57,63 +63,90 @@ public class AppWindow {
 	 */
 	private void initialize(Mediator mediator) {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 940, 489);
+		frame.setBounds(100, 100, 573, 489);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new GridLayout(5, 0, 0, 0));
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		frame.getContentPane().add(panel_1);
 		
+		JLabel lblInputFile = new JLabel("");
 		JButton btnInputFile = new JButton("Choose input file");
 		btnInputFile.addActionListener(event -> {
-			mediator.chooseInputFile();
+			var file = mediator.chooseInputFile();
+			lblInputFile.setText(file);
 		});
-		panel_1.add(btnInputFile);
+		panel_1.setLayout(new BorderLayout(0, 0));
+		panel_1.add(btnInputFile, BorderLayout.NORTH);
 		
-		JLabel lblInputFile = new JLabel("New label");
-		lblInputFile.setFont(new Font("SansSerif", Font.PLAIN, 16));
-		panel_1.add(lblInputFile);
+		lblInputFile.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInputFile.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		panel_1.add(lblInputFile, BorderLayout.CENTER);
 		
 		JPanel panel = new JPanel();
+		panel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		frame.getContentPane().add(panel);
 		
+		JLabel lblOutputFile = new JLabel("");
 		JButton btnOutputFile = new JButton("Choose output file");
-		panel.add(btnOutputFile);
+		btnOutputFile.addActionListener(event -> {
+			var file = mediator.chooseOutputFile();
+			lblOutputFile.setText(file);
+		});
+		panel.setLayout(new BorderLayout(0, 0));
+		panel.add(btnOutputFile, BorderLayout.NORTH);
 		
-		JLabel lblOutputFile = new JLabel("New label");
+		lblOutputFile.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblOutputFile);
 		
 		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		frame.getContentPane().add(panel_3);
 		
+		JLabel lblPublicKey = new JLabel("");
 		JButton btnPublicKey = new JButton("Choose public key");
 		btnPublicKey.addActionListener(event -> {
-			mediator.chooseKey(false);
+			var key = mediator.chooseKey(false);
+			lblPublicKey.setText(key);
 		});
-		panel_3.add(btnPublicKey);
+		panel_3.setLayout(new BorderLayout(0, 0));
+		panel_3.add(btnPublicKey, BorderLayout.NORTH);
 		
-		JLabel lblPublicKey = new JLabel("New label");
+		lblPublicKey.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_3.add(lblPublicKey);
 		
 		JPanel panel_4 = new JPanel();
+		panel_4.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		frame.getContentPane().add(panel_4);
 		
+		JLabel lblPrivateKey = new JLabel("");
 		JButton btnPrivateKey = new JButton("Choose private key");
-		panel_4.add(btnPrivateKey);
+		btnPrivateKey.addActionListener(event -> {
+			var key = mediator.chooseKey(true);
+			lblPrivateKey.setText(key);
+		});
+		panel_4.setLayout(new BorderLayout(0, 0));
+		panel_4.add(btnPrivateKey, BorderLayout.NORTH);
 		
-		JLabel lblPrivateKey = new JLabel("New label");
+		lblPrivateKey.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_4.add(lblPrivateKey);
 		
 		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		frame.getContentPane().add(panel_2);
 		
 		JButton btnEncrypt = new JButton("Encrypt");
 		btnEncrypt.addActionListener(event -> {
 			mediator.encrypt();
 		});
+		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		panel_2.add(btnEncrypt);
 		
 		JButton btnDecrypt = new JButton("Decrypt");
+		btnDecrypt.addActionListener(event -> {
+			mediator.decrypt();
+		});
 		panel_2.add(btnDecrypt);
 	}
 
