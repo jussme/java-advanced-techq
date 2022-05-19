@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -13,9 +14,13 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
 
+import javax.crypto.SecretKey;
+
 import com.mk.java.gui.AppWindow;
+import com.mk.java.lib.base.ConcreteEncoder;
+import com.mk.java.lib.base.Encoder.Algorithm;
 import com.mk.java.lib.base.Helper;
-import com.mk.java.lib.base.RSAProcessor;
+import com.mk.java.lib.base.Helper.KeyType;
 
 public class Start {
 	
@@ -24,6 +29,7 @@ public class Start {
 		private Path outputFile;
 		private PrivateKey privateKey;
 		private PublicKey publicKey;
+		private SecretKey secretKey;
 		
 		@Override
 		public String chooseInputFile() {
@@ -48,18 +54,26 @@ public class Start {
 		}
 
 		@Override
-		public String chooseKey(boolean privateKey) {
+		public String chooseKey(KeyType keyType) {
 			var key = AppWindow.chooseFile();
 			if(key == null) {
 				return null;
 			}
+			
 			try {
-				if(privateKey) {
-					this.privateKey = Helper.getPrivateKey(key.toString());
-				} else {
-					publicKey = Helper.getPublicKey(key.toString());
+				var readKey = Helper.getKey(key.toString(), keyType);
+				switch(keyType) {
+				case PUBLIC:
+					this.publicKey = (PublicKey) readKey;
+					break;
+				case PRIVATE:
+					this.privateKey = (PrivateKey) readKey;
+					break;
+				case SECRET:
+					this.secretKey = (SecretKey) readKey;
+					break;
 				}
-				return publicKey.toString();
+				return key.toString();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -79,25 +93,45 @@ public class Start {
 		}
 		
 		@Override
-		public void encrypt() {
+		public void encrypt(Algorithm alg) {
 			try (var input = getFileInputStream(inputFile);
 					var output = getFileOutputStream(outputFile)) {
-				new RSAProcessor().encrypt(input, output, publicKey);
+				Key usedKey = null;
+				switch(alg) {
+				case RSA:
+					usedKey = publicKey;
+					break;
+				case AES:
+					usedKey = secretKey;
+					break;
+				default:
+					System.err.println("ERROR encrypt(Algorithm alg): alg NULL");
+					break;
+				}
+				new ConcreteEncoder().encrypt(input, output, usedKey, alg);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
 		@Override
-		public void decrypt() {
+		public void decrypt(Algorithm alg) {
 			try (var input = getFileInputStream(inputFile);
 					var output = getFileOutputStream(outputFile)) {
-				new RSAProcessor().decrypt(input, output, privateKey);
+				Key usedKey = null;
+				switch(alg) {
+				case RSA:
+					usedKey = privateKey;
+					break;
+				case AES:
+					usedKey = secretKey;
+					break;
+				}
+				new ConcreteEncoder().decrypt(input, output, usedKey, alg);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	public static void main(String[] args) throws NoSuchAlgorithmException {

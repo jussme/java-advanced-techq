@@ -82,7 +82,7 @@ public class Form extends JFrame {
 			String retMessage = action.apply(argMap);
 			if(retMessage == null) {
 				JOptionPane.showMessageDialog(this,
-						"Success",
+						"Info",
 						"Success",
 						JOptionPane.INFORMATION_MESSAGE
 				);
@@ -90,8 +90,8 @@ public class Form extends JFrame {
 			} else {
 				JOptionPane.showMessageDialog(this,
 						retMessage,
-						"Error",
-						JOptionPane.ERROR_MESSAGE
+						"Info",
+						JOptionPane.INFORMATION_MESSAGE
 				);
 			}
 		});

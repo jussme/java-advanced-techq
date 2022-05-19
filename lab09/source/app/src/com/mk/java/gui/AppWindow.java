@@ -1,22 +1,23 @@
 package com.mk.java.gui;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.nio.file.Path;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.GridLayout;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.BorderLayout;
-import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
-import java.awt.FlowLayout;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
+
+import com.mk.java.lib.base.Encoder.Algorithm;
+import com.mk.java.lib.base.Helper.KeyType;
 
 public class AppWindow {
 
@@ -25,9 +26,9 @@ public class AppWindow {
 	static public interface Mediator {
 		String chooseInputFile();
 		String chooseOutputFile();
-		String chooseKey(boolean privateKey);
-		void encrypt();
-		void decrypt();
+		String chooseKey(KeyType keyType);
+		void encrypt(Algorithm alg);
+		void decrypt(Algorithm alg);
 	}
 	
 	public static Path chooseFile() {
@@ -65,7 +66,7 @@ public class AppWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 573, 489);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new GridLayout(5, 0, 0, 0));
+		frame.getContentPane().setLayout(new GridLayout(6, 0, 0, 0));
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
@@ -105,9 +106,9 @@ public class AppWindow {
 		frame.getContentPane().add(panel_3);
 		
 		JLabel lblPublicKey = new JLabel("");
-		JButton btnPublicKey = new JButton("Choose public key");
+		JButton btnPublicKey = new JButton("Choose encryption key");
 		btnPublicKey.addActionListener(event -> {
-			var key = mediator.chooseKey(false);
+			var key = mediator.chooseKey(KeyType.PUBLIC);
 			lblPublicKey.setText(key);
 		});
 		panel_3.setLayout(new BorderLayout(0, 0));
@@ -121,9 +122,9 @@ public class AppWindow {
 		frame.getContentPane().add(panel_4);
 		
 		JLabel lblPrivateKey = new JLabel("");
-		JButton btnPrivateKey = new JButton("Choose private key");
+		JButton btnPrivateKey = new JButton("Choose decryption key");
 		btnPrivateKey.addActionListener(event -> {
-			var key = mediator.chooseKey(true);
+			var key = mediator.chooseKey(KeyType.PRIVATE);
 			lblPrivateKey.setText(key);
 		});
 		panel_4.setLayout(new BorderLayout(0, 0));
@@ -132,22 +133,50 @@ public class AppWindow {
 		lblPrivateKey.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_4.add(lblPrivateKey);
 		
+		JPanel panel_5 = new JPanel();
+		panel_5.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		frame.getContentPane().add(panel_5);
+		panel_5.setLayout(new BorderLayout(0, 0));
+
+		JLabel lblSecretKey = new JLabel("");
+		JButton btnSecretKey = new JButton("Choose secret key");
+		btnSecretKey.addActionListener(event -> {
+			var key = mediator.chooseKey(KeyType.SECRET);
+			lblSecretKey.setText(key);
+		});
+		panel_5.add(btnSecretKey, BorderLayout.NORTH);
+		
+		lblSecretKey.setHorizontalAlignment(SwingConstants.CENTER);
+		panel_5.add(lblSecretKey, BorderLayout.CENTER);
+		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		frame.getContentPane().add(panel_2);
 		
-		JButton btnEncrypt = new JButton("Encrypt");
-		btnEncrypt.addActionListener(event -> {
-			mediator.encrypt();
+		JButton btnEncryptRSA = new JButton("Encrypt RSA");
+		btnEncryptRSA.addActionListener(event -> {
+			mediator.encrypt(Algorithm.RSA);
 		});
 		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		panel_2.add(btnEncrypt);
+		panel_2.add(btnEncryptRSA);
 		
-		JButton btnDecrypt = new JButton("Decrypt");
-		btnDecrypt.addActionListener(event -> {
-			mediator.decrypt();
+		JButton btnDecryptRSA = new JButton("Decrypt RSA");
+		btnDecryptRSA.addActionListener(event -> {
+			mediator.decrypt(Algorithm.RSA);
 		});
-		panel_2.add(btnDecrypt);
+		
+		JButton btnEncryptAES = new JButton("Encrypt AES");
+		btnEncryptAES.addActionListener(event -> {
+			mediator.encrypt(Algorithm.AES);
+		});
+		panel_2.add(btnEncryptAES);
+		panel_2.add(btnDecryptRSA);
+		
+		JButton btnDecryptAES = new JButton("Decrypt AES");
+		btnDecryptAES.addActionListener(event -> {
+			mediator.decrypt(Algorithm.AES);
+		});
+		panel_2.add(btnDecryptAES);
 	}
 
 }

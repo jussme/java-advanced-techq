@@ -10,17 +10,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
+@XmlAccessorType(XmlAccessType.NONE)
 @Entity(name="event")
 @Table(name="Events", schema = "Accounting")
 public class Event extends BaseEntity{
 	
+	@XmlElement
 	@Column(name="Event_name", length=50, nullable=false, unique=false)
 	private String name;
 	
+	@XmlElement
 	@Column(name="Event_location", length=50, nullable=false, unique=false)
 	private String location;
 	
+	@XmlElement
 	@Column(name="Event_datetime", nullable=true, unique=false)
 	private LocalDateTime date;
 	

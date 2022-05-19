@@ -29,12 +29,11 @@ public class DemoMediator implements Mediator{
 			new Form(form, map -> {
 				try {
 					var ent = entityClass.getDeclaredConstructor(Map.class).newInstance(map);
-					DatabaseWrapper.add(ent);
+					return "id: " + DatabaseWrapper.add(ent).getId();
 				} catch (Exception e) {
 					e.printStackTrace();
 					return e.getMessage();
 				}
-				return null;
 			});
 			
 		} catch (Exception e) {

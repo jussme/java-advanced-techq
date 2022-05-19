@@ -17,12 +17,13 @@ public class DatabaseWrapper {
 		return session.createQuery(criteria).getResultList();
 	}
 	
-	public static <T> void add(T entity) {
+	public static <T> T add(T entity) {
 		var session = HibernateUtil.getSession();
 		session.beginTransaction();
 		session.persist(entity);
 		session.getTransaction().commit();
 		session.close();
+		return entity;
 	}
 	
 	public static <T> T getEntity(Class<T> entityClass, Long id) {
