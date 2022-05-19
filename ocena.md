@@ -27,3 +27,8 @@ brak kilku opcji dla managera; polityka w klasie
 reczne wprowadzanie danych, przegladanie platnosci i rat; brak monitow i i raportowania platnosci
 
 **3.0**
+
+## lab09
+brak pliku polityki, slaba rozszerzalnosc aplikacji o dodatkowe algorytmy, opoznienie
+
+**4.0**
